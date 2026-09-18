@@ -148,5 +148,15 @@
     "contact_phone": "+91-7759-222500",
     "address": "Medical College Road, Korba, Chhattisgarh 495677",
     "region": "Chhattisgarh (Korba)"
+  },
+  {
+    "name": "Gundlupet Taluk General Hospital",
+    "type": "hospital",
+    "latitude": 11.8050,
+    "longitude": 76.6850,
+    "capacity": 120,
+    "contact_phone": "+91-8229-222233",
+    "address": "Main Road, Gundlupet, Chamarajanagar, Karnataka 571111",
+    "region": "Karnataka (Bandipur)"
   }
 ]
