@@ -1,0 +1,152 @@
+[
+  {
+    "name": "Baripada Main Fire Station",
+    "type": "fire_station",
+    "latitude": 21.9328,
+    "longitude": 86.7451,
+    "capacity": 4,
+    "contact_phone": "+91-6792-252101",
+    "address": "Baghra Road, Baripada, Mayurbhanj, Odisha 757001",
+    "region": "Odisha (Simlipal Buffer)"
+  },
+  {
+    "name": "Jashipur Forest Fire Beat Station",
+    "type": "fire_station",
+    "latitude": 21.9702,
+    "longitude": 86.0855,
+    "capacity": 3,
+    "contact_phone": "+91-6797-234201",
+    "address": "NH-49, Jashipur, Mayurbhanj, Odisha 757034",
+    "region": "Odisha (Simlipal West)"
+  },
+  {
+    "name": "Bathinda Central Fire Brigade",
+    "type": "fire_station",
+    "latitude": 30.2110,
+    "longitude": 74.9455,
+    "capacity": 6,
+    "contact_phone": "+91-164-2212101",
+    "address": "Civil Lines, Near Multipurpose Sports Stadium, Bathinda, Punjab 151001",
+    "region": "Punjab (Bathinda)"
+  },
+  {
+    "name": "Ludhiana Municipal Fire Headquarters",
+    "type": "fire_station",
+    "latitude": 30.9085,
+    "longitude": 75.8520,
+    "capacity": 8,
+    "contact_phone": "+91-161-2741101",
+    "address": "Old Clock Tower Chowk, Ludhiana, Punjab 141008",
+    "region": "Punjab (Ludhiana)"
+  },
+  {
+    "name": "Moti Khavdi Industrial Emergency Response Centre",
+    "type": "fire_station",
+    "latitude": 22.3450,
+    "longitude": 69.8750,
+    "capacity": 10,
+    "contact_phone": "+91-288-4001101",
+    "address": "SH-25, Moti Khavdi, Jamnagar, Gujarat 361140",
+    "region": "Gujarat (Jamnagar Industrial)"
+  },
+  {
+    "name": "Jamnagar City Fire Station",
+    "type": "fire_station",
+    "latitude": 22.4707,
+    "longitude": 70.0577,
+    "capacity": 5,
+    "contact_phone": "+91-288-2550101",
+    "address": "Kediya Road, Jamnagar, Gujarat 361001",
+    "region": "Gujarat (Jamnagar City)"
+  },
+  {
+    "name": "Ramnagar Fire Sub-Station",
+    "type": "fire_station",
+    "latitude": 29.3950,
+    "longitude": 79.1250,
+    "capacity": 4,
+    "contact_phone": "+91-5947-251101",
+    "address": "Station Road, Ramnagar, Nainital, Uttarakhand 244715",
+    "region": "Uttarakhand (Jim Corbett)"
+  },
+  {
+    "name": "Gundlupet Fire Station",
+    "type": "fire_station",
+    "latitude": 11.8020,
+    "longitude": 76.6890,
+    "capacity": 3,
+    "contact_phone": "+91-8229-222101",
+    "address": "Ooty-Mysore Road, Gundlupet, Chamarajanagar, Karnataka 571111",
+    "region": "Karnataka (Bandipur Border)"
+  },
+  {
+    "name": "Korba Central Fire Station",
+    "type": "fire_station",
+    "latitude": 22.3550,
+    "longitude": 82.7150,
+    "capacity": 5,
+    "contact_phone": "+91-7759-245101",
+    "address": "Transport Nagar, Korba, Chhattisgarh 495677",
+    "region": "Chhattisgarh (Korba)"
+  },
+  {
+    "name": "District Headquarters Hospital Baripada",
+    "type": "hospital",
+    "latitude": 21.9290,
+    "longitude": 86.7380,
+    "capacity": 200,
+    "contact_phone": "+91-6792-252250",
+    "address": "Hospital Road, Baripada, Mayurbhanj, Odisha 757001",
+    "region": "Odisha (Simlipal)"
+  },
+  {
+    "name": "Bathinda Civil Hospital & Trauma Centre",
+    "type": "hospital",
+    "latitude": 30.2150,
+    "longitude": 74.9510,
+    "capacity": 150,
+    "contact_phone": "+91-164-2212300",
+    "address": "Mansa Road, Bathinda, Punjab 151001",
+    "region": "Punjab (Bathinda)"
+  },
+  {
+    "name": "Dayanand Medical College & Hospital (DMCH)",
+    "type": "hospital",
+    "latitude": 30.9020,
+    "longitude": 75.8390,
+    "capacity": 500,
+    "contact_phone": "+91-161-4687700",
+    "address": "Civil Lines, Tagore Nagar, Ludhiana, Punjab 141001",
+    "region": "Punjab (Ludhiana)"
+  },
+  {
+    "name": "Guru Gobind Singh Govt Hospital (GG Hospital)",
+    "type": "hospital",
+    "latitude": 22.4680,
+    "longitude": 70.0630,
+    "capacity": 450,
+    "contact_phone": "+91-288-2553535",
+    "address": "Pandit Nehru Marg, Jamnagar, Gujarat 361008",
+    "region": "Gujarat (Jamnagar)"
+  },
+  {
+    "name": "Ramnagar Combined Sub-District Hospital",
+    "type": "hospital",
+    "latitude": 29.3980,
+    "longitude": 79.1210,
+    "capacity": 100,
+    "contact_phone": "+91-5947-251230",
+    "address": "Kashipur Road, Ramnagar, Nainital, Uttarakhand 244715",
+    "region": "Uttarakhand (Jim Corbett)"
+  },
+  {
+    "name": "Korba District Hospital & Burn Care Unit",
+    "type": "hospital",
+    "latitude": 22.3600,
+    "longitude": 82.7200,
+    "capacity": 250,
+    "contact_phone": "+91-7759-222500",
+    "address": "Medical College Road, Korba, Chhattisgarh 495677",
+    "region": "Chhattisgarh (Korba)"
+  }
+]

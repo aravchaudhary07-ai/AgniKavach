@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Jamnagar Petrochemical & Refining Complex",
+    "category": "refinery",
+    "latitude": 22.3582,
+    "longitude": 69.8641,
+    "buffer_radius_m": 3000.0,
+    "typical_frp_threshold": 95.0,
+    "notes": "World's largest refining hub; continuous flare stacks present 24/7. Exclude from emergency wildfire alerts unless FRP exceeds 95 MW or spread outside perimeter."
+  },
+  {
+    "name": "Korba Super Thermal Power Station (NTPC)",
+    "category": "power_plant",
+    "latitude": 22.3596,
+    "longitude": 82.6841,
+    "buffer_radius_m": 2500.0,
+    "typical_frp_threshold": 60.0,
+    "notes": "Coal-fired thermal generation plant with regular thermal emissions and boiler exhaust."
+  },
+  {
+    "name": "Mundra Ultra Mega Power Plant & Port Zone",
+    "category": "power_plant",
+    "latitude": 22.8250,
+    "longitude": 69.5250,
+    "buffer_radius_m": 3000.0,
+    "typical_frp_threshold": 70.0,
+    "notes": "Thermal generation and coastal heavy industrial zone in Kutch."
+  },
+  {
+    "name": "Bhilai Steel Plant (SAIL)",
+    "category": "steel_plant",
+    "latitude": 21.1850,
+    "longitude": 81.3850,
+    "buffer_radius_m": 3500.0,
+    "typical_frp_threshold": 80.0,
+    "notes": "Integrated blast furnace and steel manufacturing complex with constant high-temperature furnace operations."
+  },
+  {
+    "name": "Rourkela Steel Plant (SAIL)",
+    "category": "steel_plant",
+    "latitude": 22.2250,
+    "longitude": 84.8750,
+    "buffer_radius_m": 3000.0,
+    "typical_frp_threshold": 75.0,
+    "notes": "Major steel facility in northern Odisha."
+  },
+  {
+    "name": "Panipat Refinery & Petrochemical Complex (IOCL)",
+    "category": "refinery",
+    "latitude": 29.4750,
+    "longitude": 76.8850,
+    "buffer_radius_m": 2500.0,
+    "typical_frp_threshold": 85.0,
+    "notes": "Large public sector refinery with elevated flare stacks in Haryana."
+  }
+]
