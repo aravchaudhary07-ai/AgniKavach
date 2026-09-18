@@ -1,0 +1,26 @@
+# Data Ingestion & API Requests
+requests
+urllib3
+
+# Data Processing & Geospatial
+pandas
+geopandas
+shapely
+
+# Machine Learning
+lightgbm
+scikit-learn
+# pytorch (will install separately if needed for image processing)
+
+# Database
+psycopg2
+SQLAlchemy
+geoalchemy2
+
+# Backend API
+fastapi
+uvicorn
+
+# Routing & Automation
+schedule
+twilio
