@@ -176,30 +176,54 @@ EMERGENCY_ALERT_RECIPIENT=+91XXXXXXXXXX
 
 ---
 
-## 🗺️ Roadmap & Phase Tracker
+## 🗺️ Roadmap & Phase Tracker (100% Complete)
 
 - [x] **Phase 1: Local Infrastructure Setup**
   - [x] Task 1.1: Install PostgreSQL 17 for Windows and enable PostGIS 3.5 via Stack Builder.
   - [x] Task 1.2: Design and create database schemas (`hotspots`, `infrastructure`, `industrial_baselines`, `alerts_history`).
   - [x] Task 1.3: Set up Python virtual environment and install core geospatial/ML dependencies.
-- [ ] **Phase 2: Data Scraping & Pipeline**
-  - [x] Task 2.1: Write Python scraper for NASA FIRMS API (dual mode: live API + sample fallback).
-  - [x] Task 2.2: Ingest OSM data (fire stations, hospitals, roads) and WorldPop data.
-  - [x] Task 2.3: Ingest historical baseline heat signatures for industrial zones.
-  - [/] Task 2.4: Implement spatial cross-referencing (GeoPandas + Shapely) against Bhuvan boundaries.
-- [ ] **Phase 3: AI Modeling & Risk Assessment**
-  - [ ] Task 3.1: Feature Engineering (distance metrics, baseline heat comparisons).
-  - [ ] Task 3.2: Train LightGBM classification model (Forest vs. Stubble vs. Industrial).
-  - [ ] Task 3.3: Implement Fire Intensity & Capacity Analysis logic.
-- [ ] **Phase 4: Automated Action, Emergency Routing & Medical Alerts**
-  - [ ] Task 4.1: Integrate OSRM for emergency routing (multi-routing: fire stations and nearest medical facilities).
-  - [ ] Task 4.2: Build Automated Alert Dispatcher (Twilio SMS, Email & Webhook notifications).
-  - [ ] Task 4.3: Medical Help & Hospital Readiness Alert (dispatch trauma/burn unit alerts, smoke hazard warnings, and ambulance routes to nearest hospitals).
-- [ ] **Phase 5: Interactive Web-GIS Dashboard**
-  - [ ] Task 5.1: Build local FastAPI backend to serve database data.
-  - [ ] Task 5.2: Build React + Leaflet frontend for interactive map visualization.
-- [ ] **Phase 6: Pipeline Automation**
-  - [ ] Task 6.1: Create a master Python scheduler script to link and run Phase 2, 3, and 4 automatically.
+- [x] **Phase 2: Data Scraping & Pipeline**
+  - [x] Task 2.1: Write Python scraper for NASA FIRMS API (dual mode: live API + sample fallback with PostGIS deduplication).
+  - [x] Task 2.2: Ingest OSM data (fire stations, trauma hospitals, roads) and WorldPop data.
+  - [x] Task 2.3: Ingest historical baseline heat signatures for industrial zones (zero false alarms).
+  - [x] Task 2.4: Implement spatial cross-referencing (GeoPandas + Shapely) against Indian LULC boundaries.
+- [x] **Phase 3: AI Modeling & Risk Assessment**
+  - [x] Task 3.1: Feature Engineering (14 thermal, proximity, canopy, and temporal metrics).
+  - [x] Task 3.2: Train LightGBM multi-class classification model (Forest vs. Stubble vs. Industrial vs. False Alarm).
+  - [x] Task 3.3: Implement Fire Intensity & Dynamic Risk Scorer (0–100 threat index with severity tiers).
+  - [x] Task 3.4: Setup PyTorch CNN (`SentinelFireCNN`) for Sentinel-2 optical multi-band visual confirmation.
+- [x] **Phase 4: Automated Action, Emergency Routing & Medical Alerts**
+  - [x] Task 4.1: Integrate OSRM for emergency routing (multi-routing: fire stations and nearest medical facilities).
+  - [x] Task 4.2: Build Automated Alert Dispatcher (Twilio SMS, Email & Webhook notifications).
+  - [x] Task 4.3: Medical Help & Hospital Readiness Alert (dispatch trauma/burn unit alerts, smoke hazard warnings, and ambulance routes to nearest hospitals).
+- [x] **Phase 5: Interactive Web-GIS Dashboard**
+  - [x] Task 5.1: Build local FastAPI backend to serve spatial telemetry and OSRM routes.
+  - [x] Task 5.2: Build interactive Web-GIS Command Center with Leaflet, pulsing radar markers, dark/satellite basemaps, and dual routing visualization.
+- [x] **Phase 6: Pipeline Automation**
+  - [x] Task 6.1: Create a master Python scheduler daemon (`pipeline_daemon.py`) orchestrating all 5 core stages in an automated loop.
+
+---
+
+## 💻 Running the System
+
+### 1. Start Interactive Web-GIS Command Center
+Launch the FastAPI geospatial service and web interface:
+```powershell
+cd c:\_SIH\AgniKavach
+.\venv\Scripts\uvicorn api.main:app --host 127.0.0.1 --port 8000 --reload
+```
+Open your browser and navigate to:
+👉 **`http://127.0.0.1:8000/`**
+
+### 2. Run Autonomous Pipeline Daemon
+To trigger a one-shot pipeline execution across all 5 stages (Ingest -> Cross-Ref -> LightGBM -> PyTorch CNN -> Dual Alert Dispatch):
+```powershell
+.\venv\Scripts\python scheduler\pipeline_daemon.py --once
+```
+To run as a continuous 24/7 background daemon:
+```powershell
+.\venv\Scripts\python scheduler\pipeline_daemon.py --interval 5
+```
 
 ---
 

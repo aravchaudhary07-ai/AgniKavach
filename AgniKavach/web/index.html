@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AGNI-KAVACH | Tactical Geospatial Wildfire & Medical Defense Command</title>
+  
+  <!-- Modern Typography: Orbitron for HUD, Outfit for Display, Inter for UI, JetBrains Mono for Telemetry -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Orbitron:wght@500;700;900&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet GIS Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="command-center-body">
+
+  <!-- ========================================================================= -->
+  <!-- TOP GLOBAL MISSION HEADER -->
+  <!-- ========================================================================= -->
+  <header class="tactical-header">
+    <div class="header-left">
+      <div class="radar-logo-box">
+        <div class="radar-scanner"></div>
+        <span class="radar-flame">🔥</span>
+      </div>
+      <div class="brand-meta">
+        <div class="brand-title-row">
+          <span class="title-brand">AGNI-KAVACH</span>
+          <span class="hud-tag">SIH 26162</span>
+          <span class="hud-classification">DEFENSE GEO-AI</span>
+        </div>
+        <div class="brand-sub-row">
+          <span class="system-desc">AUTONOMOUS MULTI-MODAL WILDFIRE INTELLIGENCE & EMERGENCY MEDICAL DISPATCH SYSTEM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Telemetry Stream Counters -->
+    <div class="header-stats-ticker">
+      <div class="stat-pill" title="NASA VIIRS & MODIS Thermal Hotspots">
+        <span class="stat-dot dot-red"></span>
+        <span class="stat-label">HOTSPOTS:</span>
+        <span class="stat-num" id="stat-total-hotspots">--</span>
+      </div>
+
+      <div class="stat-pill" title="Critical Forest Fire Threats">
+        <span class="stat-dot dot-orange"></span>
+        <span class="stat-label">CRITICAL:</span>
+        <span class="stat-num text-critical" id="stat-critical-fires">--</span>
+      </div>
+
+      <div class="stat-pill" title="Agricultural Stubble Burning">
+        <span class="stat-dot dot-amber"></span>
+        <span class="stat-label">CROP BURNS:</span>
+        <span class="stat-num text-amber" id="stat-crop-burns">--</span>
+      </div>
+
+      <div class="stat-pill" title="Suppressed Industrial Heat Signatures">
+        <span class="stat-dot dot-cyan"></span>
+        <span class="stat-label">INDUSTRIAL:</span>
+        <span class="stat-num text-cyan" id="stat-industrial-flares">--</span>
+      </div>
+
+      <div class="stat-pill" title="Dispatched Multi-Agency SMS Transmissions">
+        <span class="stat-dot dot-green"></span>
+        <span class="stat-label">ALERTS SENT:</span>
+        <span class="stat-num text-green" id="stat-dispatched-alerts">--</span>
+      </div>
+    </div>
+
+    <!-- Header Operations Controls -->
+    <div class="header-actions">
+      <div class="telemetry-badge">
+        <span class="live-signal-blip"></span>
+        <span class="live-text">POSTGIS ONLINE</span>
+      </div>
+
+      <button id="btn-trigger-pipeline" class="btn-tactical-primary" title="Trigger satellite ingestion & AI classification cycle">
+        <span class="btn-glow-ring"></span>
+        <span class="btn-icon">⚡</span>
+        <span>SCAN SATELLITES</span>
+      </button>
+
+      <button id="btn-toggle-sound" class="btn-tactical-icon" title="Toggle Tactical Audio FX">
+        <span id="sound-icon">🔊</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN 3-PANEL COMMAND CENTER LAYOUT -->
+  <!-- ========================================================================= -->
+  <div class="war-room-container">
+
+    <!-- --------------------------------------------------------------------- -->
+    <!-- LEFT PANEL: INCIDENT FEED & FILTER MATRIX (320px)                     -->
+    <!-- --------------------------------------------------------------------- -->
+    <aside class="panel-left">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <span class="hud-bullet">■</span>
+          <h3>ANOMALY RADAR QUEUE</h3>
+        </div>
+        <span class="badge-counter" id="active-queue-count">0 ACTIVE</span>
+      </div>
+
+      <!-- Quick Search & Search Filter -->
+      <div class="feed-search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="input-incident-search" placeholder="Search by ID, State, Fire Dept..." autocomplete="off">
+      </div>
+
+      <!-- Tactical Filter Matrix -->
+      <div class="filter-chips-matrix">
+        <button class="filter-chip active" data-filter="all">ALL (<span id="count-all">0</span>)</button>
+        <button class="filter-chip chip-critical" data-filter="critical">CRIT (<span id="count-crit">0</span>)</button>
+        <button class="filter-chip" data-filter="forest_fire">FOREST (<span id="count-forest">0</span>)</button>
+        <button class="filter-chip" data-filter="crop_burn">CROP (<span id="count-crop">0</span>)</button>
+        <button class="filter-chip" data-filter="industrial_flare">IND (<span id="count-ind">0</span>)</button>
+      </div>
+
+      <!-- Scrollable Incident Cards List -->
+      <div class="incident-stream" id="incident-cards-container">
+        <div class="stream-loader">
+          <div class="scanning-bar"></div>
+          <span>ACQUIRING SATELLITE TELEMETRY...</span>
+        </div>
+      </div>
+
+      <!-- Left Panel Footer: System Diagnostics -->
+      <div class="panel-left-footer">
+        <div class="diag-item">
+          <span>SATELLITE SYNC</span>
+          <span class="text-green">VIIRS / MODIS OK</span>
+        </div>
+        <div class="diag-item">
+          <span>AI CLASSIFIER</span>
+          <span class="text-green">LIGHTGBM READY</span>
+        </div>
+        <div class="diag-item">
+          <span>CNN VERIFIER</span>
+          <span class="text-green">SENTINEL-2 ACTIVE</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- --------------------------------------------------------------------- -->
+    <!-- CENTER STAGE: TACTICAL MAP & FLOATING HUD                             -->
+    <!-- --------------------------------------------------------------------- -->
+    <main class="panel-center">
+      <!-- Full-bleed Leaflet Map Container -->
+      <div id="map" class="tactical-leaflet-map"></div>
+
+      <!-- Top Map Floating HUD Overlay: Crosshairs & Coordinates -->
+      <div class="map-hud-topbar">
+        <div class="hud-coords-box">
+          <span class="hud-label">CENTER VIEW:</span>
+          <span class="hud-val" id="hud-center-coords">22.8000° N, 81.5000° E</span>
+        </div>
+        <div class="hud-threat-level-box">
+          <span class="hud-label">DEFCON STATE:</span>
+          <span class="hud-val text-critical" id="hud-threat-state">ALPHA-RED (ELEVATED)</span>
+        </div>
+        <div class="hud-wind-box">
+          <span class="hud-label">WIND CORRIDOR:</span>
+          <span class="hud-val">18.4 KM/H &bull; 210° SSW</span>
+        </div>
+      </div>
+
+      <!-- Map Floating Layer Toggles Toolbar -->
+      <div class="map-floating-toolbar">
+        <button class="tool-btn active" id="layer-toggle-hotspots" title="Toggle Thermal Hotspots">
+          <span>🔥</span> <span class="tool-txt">Hotspots</span>
+        </button>
+        <button class="tool-btn active" id="layer-toggle-firestations" title="Toggle Fire Brigade Stations">
+          <span>🚒</span> <span class="tool-txt">Fire Stations</span>
+        </button>
+        <button class="tool-btn active" id="layer-toggle-hospitals" title="Toggle Trauma Care Hospitals">
+          <span>🏥</span> <span class="tool-txt">Trauma Centers</span>
+        </button>
+        <button class="tool-btn active" id="layer-toggle-baselines" title="Toggle Industrial Baselines">
+          <span>🏭</span> <span class="tool-txt">Baselines</span>
+        </button>
+        <div class="tool-divider"></div>
+        <button class="tool-btn btn-basemap-switch" id="btn-toggle-basemap" title="Switch Basemap (Dark vs Satellite)">
+          <span>🛰️</span> <span id="basemap-label">Satellite Imagery</span>
+        </button>
+      </div>
+
+      <!-- Floating Tactical Map Legend -->
+      <div class="tactical-legend-overlay">
+        <div class="legend-header">
+          <span class="legend-title">GIS SPECTRUM</span>
+          <span class="legend-dot"></span>
+        </div>
+        <div class="legend-grid">
+          <div class="legend-cell"><span class="marker-dot dot-crit"></span> Critical Wildfire</div>
+          <div class="legend-cell"><span class="marker-dot dot-high"></span> Stubble / Crop Burn</div>
+          <div class="legend-cell"><span class="marker-dot dot-ind"></span> Industrial Flare</div>
+          <div class="legend-cell"><span>🚒</span> Fire Brigade HQ</div>
+          <div class="legend-cell"><span>🏥</span> Trauma / Burn Unit</div>
+          <div class="legend-cell"><span class="route-line line-fire"></span> Fire Tender Path</div>
+          <div class="legend-cell"><span class="route-line line-med"></span> Ambulance Route</div>
+        </div>
+      </div>
+
+      <!-- FLOATING BOTTOM DOCK: DUAL ROUTE DISPATCH CONSOLE -->
+      <div class="route-dispatch-dock" id="route-dispatch-dock">
+        <div class="dock-header">
+          <div class="dock-title-group">
+            <span class="dock-pulse"></span>
+            <h4>MULTI-AGENCY TACTICAL ROUTE CORRIDOR &bull; INCIDENT #<span id="dock-incident-id">--</span></h4>
+          </div>
+          <button class="btn-dock-close" id="btn-close-dock" title="Close Route Dock">&times;</button>
+        </div>
+
+        <div class="dock-body-grid">
+          <!-- Fire Brigade Routing Card -->
+          <div class="dock-agency-card card-fire">
+            <div class="agency-badge">
+              <span class="agency-icon">🚒</span>
+              <span class="agency-name">PRIMARY FIRE BRIGADE RESPONSE</span>
+            </div>
+            <div class="agency-station-name" id="dock-fire-station-name">Loading station telemetry...</div>
+            <div class="agency-telemetry-row">
+              <div class="dock-stat">
+                <span class="d-label">ROAD DISTANCE</span>
+                <span class="d-val" id="dock-fire-distance">-- km</span>
+              </div>
+              <div class="dock-stat">
+                <span class="d-label">ESTIMATED ETA</span>
+                <span class="d-val text-orange" id="dock-fire-eta">-- min</span>
+              </div>
+              <div class="dock-stat">
+                <span class="d-label">CREW & CAPACITY</span>
+                <span class="d-val" id="dock-fire-capacity">Heavy Tender (12K Liters)</span>
+              </div>
+              <div class="dock-stat">
+                <span class="d-label">HOTLINE</span>
+                <span class="d-val font-mono" id="dock-fire-phone">--</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Medical Emergency Hospital Card -->
+          <div class="dock-agency-card card-medical">
+            <div class="agency-badge badge-med">
+              <span class="agency-icon">🏥</span>
+              <span class="agency-name">MEDICAL TRAUMA & BURN EVACUATION</span>
+            </div>
+            <div class="agency-station-name text-cyan" id="dock-hospital-name">Loading hospital telemetry...</div>
+            <div class="agency-telemetry-row">
+              <div class="dock-stat">
+                <span class="d-label">EVACUATION DIST</span>
+                <span class="d-val" id="dock-hospital-distance">-- km</span>
+              </div>
+              <div class="dock-stat">
+                <span class="d-label">AMBULANCE ETA</span>
+                <span class="d-val text-cyan" id="dock-hospital-eta">-- min</span>
+              </div>
+              <div class="dock-stat">
+                <span class="d-label">CASUALTY READINESS</span>
+                <span class="d-val text-green" id="dock-hospital-capacity">Burn ICU & Trauma Ready</span>
+              </div>
+              <div class="dock-stat">
+                <span class="d-label">CONTROL ROOM</span>
+                <span class="d-val font-mono text-cyan" id="dock-hospital-phone">--</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Command Dispatch Action Box -->
+          <div class="dock-action-box">
+            <button class="btn-dock-dispatch" id="btn-dock-dispatch-action">
+              <span class="btn-dispatch-icon">🚨</span>
+              <span class="btn-dispatch-label">DISPATCH DUAL ALERTS</span>
+              <span class="btn-dispatch-sub">Send Fire & Medical SMS via Twilio</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- --------------------------------------------------------------------- -->
+    <!-- RIGHT PANEL: INCIDENT DOSSIER & SENTINEL-2 OPTICAL INSPECTOR (360px)  -->
+    <!-- --------------------------------------------------------------------- -->
+    <aside class="panel-right">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <span class="hud-bullet">■</span>
+          <h3>TACTICAL INCIDENT DOSSIER</h3>
+        </div>
+        <span class="badge-dossier-tier" id="dossier-tier-badge">SELECT INCIDENT</span>
+      </div>
+
+      <div class="dossier-content" id="dossier-empty-state">
+        <div class="empty-state-graphic">🛰️</div>
+        <h4>NO ANOMALY SELECTED</h4>
+        <p>Click any pulsing thermal marker on the tactical map or select an incident from the radar queue to initiate multi-spectral optical verification and dual route analysis.</p>
+      </div>
+
+      <!-- Loaded Dossier Details View -->
+      <div class="dossier-content" id="dossier-details-view" style="display: none;">
+        
+        <!-- Incident Identity & Sensor -->
+        <div class="dossier-section-box">
+          <div class="dossier-row-between">
+            <span class="dossier-id-title" id="dossier-incident-id">INCIDENT #--</span>
+            <span class="dossier-sensor-tag" id="dossier-sensor-tag">VIIRS 375m</span>
+          </div>
+          <div class="dossier-coords font-mono" id="dossier-coords">--° N, --° E</div>
+          <div class="dossier-timestamp" id="dossier-timestamp">Acquired: --</div>
+        </div>
+
+        <!-- Sentinel-2 Optical CNN Verification Visualizer -->
+        <div class="dossier-section-box optical-inspection-box">
+          <div class="section-title-row">
+            <span class="sec-label">SENTINEL-2 MULTI-SPECTRAL VERIFIER</span>
+            <span class="cnn-badge cnn-confirmed" id="dossier-cnn-verdict">CONFIRMED ACTIVE FLAME</span>
+          </div>
+          
+          <!-- Synthetic Multi-Spectral 4-Band Optical Viewport -->
+          <div class="optical-canvas-container">
+            <canvas id="optical-canvas" width="300" height="150"></canvas>
+            <div class="optical-scan-crosshair"></div>
+            <div class="canvas-telemetry-overlay">
+              <span class="spectrum-tag">B04+B03+B02 (RGB) &bull; B12 (SWIR)</span>
+              <span class="res-tag">10m / px Ground Field</span>
+            </div>
+          </div>
+
+          <div class="optical-metrics-grid">
+            <div class="opt-metric">
+              <span class="opt-lbl">FIRE PROBABILITY</span>
+              <span class="opt-val text-critical" id="dossier-fire-prob">99.4%</span>
+            </div>
+            <div class="opt-metric">
+              <span class="opt-lbl">SWIR ANOMALY INTENSITY</span>
+              <span class="opt-val text-amber" id="dossier-swir-val">0.784</span>
+            </div>
+            <div class="opt-metric">
+              <span class="opt-lbl">NORMALIZED BURN (NBR)</span>
+              <span class="opt-val text-cyan" id="dossier-nbr-val">0.528</span>
+            </div>
+            <div class="opt-metric">
+              <span class="opt-lbl">CNN CONFIDENCE</span>
+              <span class="opt-val text-green" id="dossier-confidence">HIGH (&gt;0.95)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Threat Index Gauge Bar -->
+        <div class="dossier-section-box">
+          <div class="section-title-row">
+            <span class="sec-label">DYNAMIC THREAT & VULNERABILITY INDEX</span>
+            <span class="threat-score-val" id="dossier-threat-score">-- / 100</span>
+          </div>
+          <div class="gauge-track">
+            <div class="gauge-fill" id="dossier-gauge-fill" style="width: 0%;"></div>
+          </div>
+          <div class="gauge-sub-labels">
+            <span>LOW</span>
+            <span>MODERATE</span>
+            <span>HIGH</span>
+            <span>CRITICAL</span>
+          </div>
+        </div>
+
+        <!-- Thermal & Environmental Telemetry -->
+        <div class="dossier-section-box">
+          <div class="sec-label mb-6">PHYSICAL & CANOPY TELEMETRY</div>
+          <div class="dossier-grid-2col">
+            <div class="dossier-data-cell">
+              <span class="cell-k">FIRE RADIATIVE POWER:</span>
+              <span class="cell-v text-orange" id="dossier-frp">-- MW</span>
+            </div>
+            <div class="dossier-data-cell">
+              <span class="cell-k">BRIGHTNESS TEMP:</span>
+              <span class="cell-v" id="dossier-brightness">-- K</span>
+            </div>
+            <div class="dossier-data-cell">
+              <span class="cell-k">LAND USE / COVER:</span>
+              <span class="cell-v" id="dossier-landcover">--</span>
+            </div>
+            <div class="dossier-data-cell">
+              <span class="cell-k">INDUSTRIAL STATUS:</span>
+              <span class="cell-v" id="dossier-industrial-status">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Emergency Responders Quick Card -->
+        <div class="dossier-section-box">
+          <div class="sec-label mb-6">ASSIGNED EMERGENCY RESPONDERS</div>
+          <div class="responder-dock-row">
+            <div class="resp-icon">🚒</div>
+            <div class="resp-details">
+              <div class="resp-name" id="dossier-fire-name">Nearest Station</div>
+              <div class="resp-meta"><span id="dossier-fire-dist">-- km</span> &bull; <span id="dossier-fire-phone" class="font-mono text-muted">--</span></div>
+            </div>
+          </div>
+          <div class="responder-dock-row">
+            <div class="resp-icon">🏥</div>
+            <div class="resp-details">
+              <div class="resp-name text-cyan" id="dossier-hospital-name">Nearest Hospital</div>
+              <div class="resp-meta"><span id="dossier-hospital-dist">-- km</span> &bull; <span id="dossier-hospital-phone" class="font-mono text-muted">--</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Dispatched Emergency Broadcast History -->
+        <div class="dossier-section-box alerts-history-box">
+          <div class="section-title-row">
+            <span class="sec-label">RECENT EMERGENCY SMS BROADCASTS</span>
+            <span class="badge-alert-count" id="badge-alert-count">0 Sent</span>
+          </div>
+          <div class="alerts-history-list" id="alerts-history-container">
+            <div class="no-alerts-hint">No emergency transmissions logged yet.</div>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Leaflet GIS JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <script src="/static/app.js"></script>
+</body>
+</html>
